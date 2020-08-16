@@ -11,6 +11,7 @@ type Rating struct {
 }
 
 type Movie struct {
+	ID       string
 	title    string
 	year     int
 	rated    string
@@ -25,7 +26,7 @@ type Movie struct {
 	country  string
 	awards   string
 	poster   string
-	ratings  []Rating
+	ratings  []*Rating
 }
 
 type HTTPClient interface {

@@ -2,10 +2,11 @@ package omdb
 
 import (
 	"bytes"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 type MockClient struct {
@@ -22,18 +23,16 @@ func (m *MockClient) Do(req *http.Request) (*http.Response, error) {
 	}, nil
 }
 
-func TestClient(t *testing.T) {
+func TestGetMovieByID(t *testing.T) {
 	testClient := &Client{
 		httpClient: &MockClient{},
 		apiKey:     "testkey",
 	}
 
-	resp, err := testClient.GetMovieByID("12345")
+	actualMovie, err := testClient.GetMovieByID("12345")
 
-	fmt.Println(resp)
-	fmt.Println(err)
-
-	expectedMove := &Movie{
+	expectedMovie := &Movie{
+		ID:       "tt0113243",
 		title:    "Hackers",
 		year:     1995,
 		rated:    "PG-13",
@@ -48,6 +47,32 @@ func TestClient(t *testing.T) {
 		country:  "USA",
 		awards:   "N/A",
 		poster:   "https://m.media-amazon.com/images/M/MV5BNmExMTkyYjItZTg0YS00NWYzLTkwMjItZWJiOWQ2M2ZkYjE4XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg",
-		ratings:  nil,
+		ratings: []*Rating{
+			&Rating{
+				source: "Internet Movie Database",
+				value:  "6.3/10",
+			},
+			&Rating{
+				source: "Rotten Tomatoes",
+				value:  "33%",
+			},
+			&Rating{
+				source: "Metacritic",
+				value:  "46/100",
+			},
+		},
+		// "Metascore":"46",
+		// "imdbRating":"6.3",
+		// "imdbVotes":"64,262",
+		// "imdbID":"tt0113243",
+		// "Type":"movie",
+		// "DVD":"24 Apr 2001",
+		// "BoxOffice":"N/A",
+		// "Production":"MGM",
+		// "Website":"N/A",
+		// "Response":"True"
 	}
+
+	assert.Nil(t, err)
+	assert.Equal(t, expectedMovie, actualMovie)
 }
