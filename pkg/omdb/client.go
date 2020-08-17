@@ -115,17 +115,12 @@ func (c *Client) GetMovieByID(id string) (*OMDBResponse, error) {
 	}
 	if resp.StatusCode == http.StatusOK {
 		jsonBlob, _ := ioutil.ReadAll(resp.Body)
-		fmt.Printf("Jsonblob: %s\n", jsonBlob)
 		err = json.Unmarshal(jsonBlob, result)
-		fmt.Printf("Unmarshalling error: %v\n", err)
 
 		if err != nil {
 			fmt.Println("Error decoding json")
 			return nil, err
 		}
-
-		fmt.Printf("result: %v\n", result)
-		fmt.Printf("err: %v\n", err)
 
 		if result.Response != "True" {
 			return nil, fmt.Errorf(result.Error)

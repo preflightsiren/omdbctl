@@ -2,7 +2,7 @@ package omdb
 
 import (
 	"bytes"
-	"fmt"
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"testing"
@@ -86,14 +86,14 @@ func TestErrorInMovieLookup(t *testing.T) {
 	testClient := &Client{
 		httpClient: &MockClient{
 			StatusCode:   200,
-			ResponseBody: `{"Response":"False","Error":"Incorrect IMDb ID."}`,
+			ResponseBody: `{"Response":"False","Error":"Incorrect IMDB ID."}`,
 		},
 		apiKey: "testkey",
 	}
 
 	_, err := testClient.GetMovieByID("notexist")
 
-	expectedError := fmt.Errorf("Incorrect IMDB ID.")
+	expectedError := errors.New("Incorrect IMDB ID.")
 
 	assert.Equal(t, expectedError, err)
 }
