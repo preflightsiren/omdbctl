@@ -1,6 +1,7 @@
 package omdb
 
 import (
+	"fmt"
 	"net/url"
 	"strconv"
 	"strings"
@@ -95,4 +96,30 @@ func (r *OMDBResponse) Movie() *Movie {
 		Poster:   posterURL,
 		Ratings:  r.Ratings,
 	}
+}
+
+func (m *Movie) String() string {
+	var printStrings = []string{}
+	printStrings = append(printStrings, fmt.Sprintf(`
+%s (%d)
+---
+Plot: %s
+Starring: %s
+Released: %s
+Rated: %s
+Ratings:`,
+		m.Title,
+		m.Year,
+		m.Plot,
+		strings.Join(m.Actors, ", "),
+		m.Released,
+		m.Rated))
+	for _, r := range m.Ratings {
+		printStrings = append(printStrings, fmt.Sprintf("%s: %s", r.Source, r.Value))
+	}
+
+	return strings.Join(append(printStrings), "\n")
+	// Internet Movie Database: 6.3/10
+	// Rotten Tomatoes: 33%
+	// Metacritic 46/100
 }
