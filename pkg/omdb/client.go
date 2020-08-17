@@ -7,11 +7,6 @@ import (
 	"net/http"
 )
 
-type Rating struct {
-	source string `json:"Source"`
-	value  string `json:"Value"`
-}
-
 // //`{"Title":"Hackers"
 // "Year":"1995"
 // "Rated":"PG-13"

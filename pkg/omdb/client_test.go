@@ -54,16 +54,16 @@ func TestGetMovieByID(t *testing.T) {
 		Poster:   "https://m.media-amazon.com/images/M/MV5BNmExMTkyYjItZTg0YS00NWYzLTkwMjItZWJiOWQ2M2ZkYjE4XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg",
 		Ratings: []*Rating{
 			&Rating{
-				source: "Internet Movie Database",
-				value:  "6.3/10",
+				Source: "Internet Movie Database",
+				Value:  "6.3/10",
 			},
 			&Rating{
-				source: "Rotten Tomatoes",
-				value:  "33%",
+				Source: "Rotten Tomatoes",
+				Value:  "33%",
 			},
 			&Rating{
-				source: "Metacritic",
-				value:  "46/100",
+				Source: "Metacritic",
+				Value:  "46/100",
 			},
 		},
 		// "Metascore":"46",
@@ -75,7 +75,7 @@ func TestGetMovieByID(t *testing.T) {
 		// "BoxOffice":"N/A",
 		// "Production":"MGM",
 		// "Website":"N/A",
-		// "Response":"True"
+		Response: "True",
 	}
 
 	assert.Nil(t, err)
