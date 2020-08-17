@@ -100,9 +100,9 @@ func NewClient(apiKey string) *Client {
 }
 
 // GetMovieByID returns a movie based upon its IMDB ID
-func (c *Client) GetMovieByID(id string) (*OMDBResponse, error) {
+func (c *Client) GetMovieByID(id string) (*Movie, error) {
 	result := &OMDBResponse{}
-	titleURL := fmt.Sprintf("%s/?i=%s", baseURL, id)
+	titleURL := fmt.Sprintf("%s/?i=%s&apikey=%s", baseURL, id, c.apiKey)
 	req, err := http.NewRequest("GET", titleURL, nil)
 
 	if err != nil {
@@ -126,7 +126,7 @@ func (c *Client) GetMovieByID(id string) (*OMDBResponse, error) {
 			return nil, fmt.Errorf(result.Error)
 		}
 
-		return result, nil
+		return result.Movie(), nil
 	}
 
 	return nil, fmt.Errorf("Unexpected response %v", resp.StatusCode)

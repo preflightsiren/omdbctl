@@ -16,6 +16,17 @@ omdbctl <search query> - will return results based upon the search results
 
 `go build ./cmd/omdbctl`
 
+## Running
+
+Provide the OMDB APIKEY by setting the environment variable `APIKEY`
+
+examples:
+
+```
+export APIKEY=myapikey
+go run ./cmd/omdbctl
+```
+
 ## Structure
 
 This project follows the https://github.com/golang-standards/project-layout structure

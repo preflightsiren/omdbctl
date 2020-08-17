@@ -117,7 +117,6 @@ Ratings:`,
 	for _, r := range m.Ratings {
 		printStrings = append(printStrings, fmt.Sprintf("%s: %s", r.Source, r.Value))
 	}
-
 	return strings.Join(append(printStrings), "\n")
 	// Internet Movie Database: 6.3/10
 	// Rotten Tomatoes: 33%
