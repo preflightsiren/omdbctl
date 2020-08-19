@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"../../internal/pkg/omdbctl"
 )
@@ -14,12 +15,12 @@ func main() {
 		fmt.Println("Environmant variable APIKEY not set. Please visit http://www.omdbapi.com/apikey.aspx to obtain new API keys.")
 		return
 	}
-	if len(os.Args) != 2 {
+	if len(os.Args) == 1 {
 		printHelp()
 		return
 	}
 	omdb := omdbctl.NewOMDB(os.Getenv("APIKEY"))
-	omdb.Search(os.Args[1])
+	omdb.Search(strings.Join(os.Args[1:], " "))
 }
 
 func printHelp() {
