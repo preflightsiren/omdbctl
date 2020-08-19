@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 )
 
 // //`{"Title":"Hackers"
@@ -102,7 +103,41 @@ func NewClient(apiKey string) *Client {
 // GetMovieByID returns a movie based upon its IMDB ID
 func (c *Client) GetMovieByID(id string) (*Movie, error) {
 	result := &OMDBResponse{}
-	titleURL := fmt.Sprintf("%s/?i=%s&apikey=%s", baseURL, id, c.apiKey)
+	url := fmt.Sprintf("%s/?i=%s&apikey=%s", baseURL, id, c.apiKey)
+	req, err := http.NewRequest("GET", url, nil)
+
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode == http.StatusOK {
+		jsonBlob, _ := ioutil.ReadAll(resp.Body)
+		err = json.Unmarshal(jsonBlob, result)
+
+		if err != nil {
+			fmt.Println("Error decoding json")
+			return nil, err
+		}
+
+		if result.Response != "True" {
+			return nil, fmt.Errorf(result.Error)
+		}
+
+		return result.Movie(), nil
+	}
+
+	return nil, fmt.Errorf("Unexpected response %v", resp.StatusCode)
+
+}
+
+// GetMovieByTitle returns a movie based upon its title
+func (c *Client) GetMovieByTitle(title string) (*Movie, error) {
+	result := &OMDBResponse{}
+	titleURL := fmt.Sprintf("%s/?t=%s&apikey=%s", baseURL, url.PathEscape(title), c.apiKey)
 	req, err := http.NewRequest("GET", titleURL, nil)
 
 	if err != nil {

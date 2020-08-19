@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	fmt.Printf("omdbctl - the Open Movie DB search tool.")
+	fmt.Printf("omdbctl - the Open Movie DB search tool.\n")
 	// Validate the input
 	if os.Getenv("APIKEY") == "" {
 		fmt.Println("Environmant variable APIKEY not set. Please visit http://www.omdbapi.com/apikey.aspx to obtain new API keys.")
@@ -23,5 +23,5 @@ func main() {
 }
 
 func printHelp() {
-	fmt.Printf(`Usage: %s [ID|title|search term]`, os.Args[0])
+	fmt.Printf(`Usage: %s [ID|title|search term]\n`, os.Args[0])
 }
