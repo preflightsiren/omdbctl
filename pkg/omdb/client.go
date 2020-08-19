@@ -101,8 +101,13 @@ type Client struct {
 	apiKey     string
 }
 
+type Error string
+
+func (e Error) Error() string { return string(e) }
+
 const (
-	baseURL = "http://www.omdbapi.com"
+	baseURL       = "http://www.omdbapi.com"
+	NotFoundError = Error("Movie not found!")
 )
 
 // NewClient generates a new omdb client
