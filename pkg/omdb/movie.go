@@ -74,6 +74,17 @@ type Rating struct {
 	Value  string `json:"Value"`
 }
 
+func (r *SearchResult) Movie() *Movie {
+	posterURL, _ := url.Parse(r.Poster)
+	year, _ := strconv.ParseInt(r.Year, 10, 64)
+	return &Movie{
+		ID:     r.ID,
+		Title:  r.Title,
+		Year:   int(year),
+		Poster: posterURL,
+	}
+}
+
 // Movie converts a OMDBResponse to a Movie struct
 func (r *OMDBResponse) Movie() *Movie {
 	posterURL, _ := url.Parse(r.Poster)
@@ -100,24 +111,25 @@ func (r *OMDBResponse) Movie() *Movie {
 
 func (m *Movie) String() string {
 	var printStrings = []string{}
-	printStrings = append(printStrings, fmt.Sprintf(`
-%s (%d)
----
+	printStrings = append(printStrings, fmt.Sprintf("%s (%d)\n", m.Title, m.Year))
+	if m.Plot != "" {
+		printStrings = append(printStrings, fmt.Sprintf(`---
 Plot: %s
 Starring: %s
 Released: %s
 Rated: %s
-Ratings:`,
-		m.Title,
-		m.Year,
-		m.Plot,
-		strings.Join(m.Actors, ", "),
-		m.Released,
-		m.Rated))
-	for _, r := range m.Ratings {
-		printStrings = append(printStrings, fmt.Sprintf("%s: %s", r.Source, r.Value))
+Ratings:
+`,
+			m.Plot,
+			strings.Join(m.Actors, ", "),
+			m.Released,
+			m.Rated))
 	}
-	return strings.Join(append(printStrings), "\n")
+
+	for _, r := range m.Ratings {
+		printStrings = append(printStrings, fmt.Sprintf("%s: %s\n", r.Source, r.Value))
+	}
+	return strings.Join(append(printStrings), "")
 	// Internet Movie Database: 6.3/10
 	// Rotten Tomatoes: 33%
 	// Metacritic 46/100

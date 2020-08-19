@@ -8,6 +8,14 @@ import (
 	"net/url"
 )
 
+// {"Title":"Hackers","Year":"1995","imdbID":"tt0113243","Type":"movie","Poster":"https://m.media-amazon.com/images/M/MV5BNmExMTkyYjItZTg0YS00NWYzLTkwMjItZWJiOWQ2M2ZkYjE4XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg"}
+type SearchResult struct {
+	ID     string `json:"imdbID,omitempty"`
+	Title  string `json:"Title,omitempty"`
+	Year   string `json:"Year,omitempty"`
+	Poster string `json:"Poster,omitempty"`
+}
+
 // //`{"Title":"Hackers"
 // "Year":"1995"
 // "Rated":"PG-13"
@@ -49,7 +57,6 @@ import (
 // "Website":"N/A"
 // "Response":"True"}`
 //
-
 type OMDBResponse struct {
 	ID         string    `json:"imdbID,omitempty"`
 	Title      string    `json:"Title,omitempty"`
@@ -79,6 +86,12 @@ type OMDBResponse struct {
 	Error      string    `json:"Error,omitempty"`
 }
 
+type OMDBSearchResponse struct {
+	Search       []*SearchResult `json:"Search,omitempty"`
+	TotalResults string          `json:"totalResults,omitempty"`
+	Response     string          `json:"Response"`
+	Error        string          `json:"Error,omitempty"`
+}
 type HTTPClient interface {
 	Do(req *http.Request) (*http.Response, error)
 }
@@ -162,6 +175,46 @@ func (c *Client) GetMovieByTitle(title string) (*Movie, error) {
 		}
 
 		return result.Movie(), nil
+	}
+
+	return nil, fmt.Errorf("Unexpected response %v", resp.StatusCode)
+
+}
+
+// GetMoviesBySearchTerm returns an array of  movies based upon a search query
+func (c *Client) GetMoviesBySearchTerm(searchTerm string) ([]*Movie, error) {
+	result := &OMDBSearchResponse{}
+	url := fmt.Sprintf("%s/?s=%s&apikey=%s", baseURL, url.PathEscape(searchTerm), c.apiKey)
+	req, err := http.NewRequest("GET", url, nil)
+
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode == http.StatusOK {
+		jsonBlob, _ := ioutil.ReadAll(resp.Body)
+		err = json.Unmarshal(jsonBlob, result)
+
+		if err != nil {
+			fmt.Println("Error decoding json")
+			return nil, err
+		}
+
+		if result.Response != "True" {
+			return nil, fmt.Errorf(result.Error)
+		}
+
+		movies := []*Movie{}
+
+		for _, m := range result.Search {
+			movies = append(movies, m.Movie())
+		}
+
+		return movies, nil
 	}
 
 	return nil, fmt.Errorf("Unexpected response %v", resp.StatusCode)

@@ -98,8 +98,7 @@ func TestConvertOMDBResponseToMovie(t *testing.T) {
 }
 
 func TestPrintableMovie(t *testing.T) {
-	expectedString := `
-Hackers (1995)
+	expectedString := `Hackers (1995)
 ---
 Plot: Hackers are blamed for making a virus that will capsize five oil tankers.
 Starring: Jonny Lee Miller, Angelina Jolie, Jesse Bradford, Matthew Lillard
@@ -108,6 +107,20 @@ Rated: PG-13
 Ratings:
 Internet Movie Database: 6.3/10
 Rotten Tomatoes: 33%
-Metacritic: 46/100`
+Metacritic: 46/100
+`
+	assert.Equal(t, expectedString, hackers.String())
+}
+
+func TestPrintableSummary(t *testing.T) {
+	expectedString := "Hackers (1995)\n"
+	posterURL, _ := url.Parse("https://m.media-amazon.com/images/M/MV5BNmExMTkyYjItZTg0YS00NWYzLTkwMjItZWJiOWQ2M2ZkYjE4XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg")
+	hackers = &Movie{
+		ID:     "tt0113243",
+		Title:  "Hackers",
+		Year:   1995,
+		Poster: posterURL,
+	}
+
 	assert.Equal(t, expectedString, hackers.String())
 }
